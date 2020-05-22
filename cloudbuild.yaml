@@ -1,0 +1,34 @@
+steps:
+
+  - id: "Running docker-compose"
+    name: 'gcr.io/$PROJECT_ID/docker-compose'
+    args: ['-f', 'docker-compose.cloudbuild.yaml', 'up', '-d']
+
+  - id: "Running docker ps"
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['ps']
+
+  - id: "Running sum"
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['exec', '-t', 'app', 'go', 'run', 'sum.go']
+
+  - id: "Running binary"
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['exec', '-t', 'app', '/go/src/app/sum']
+
+  - id: "Running the sum test"
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['exec', '-t', 'app', 'go', 'test']
+
+  - id: "Generate image build"
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/desafio-ci:latest'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/desafio-ci:0.0.1'
+      - '.'
+
+images:
+  - 'gcr.io/$PROJECT_ID/desafio-ci:0.0.1'
