@@ -4,4 +4,4 @@ WORKDIR /go/src/app
 
 COPY . .
 
-RUN go build soma.go
+RUN go build sum.go
